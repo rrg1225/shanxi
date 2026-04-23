@@ -1,0 +1,122 @@
+server:
+  port: 8082
+  address: 0.0.0.0
+
+spring:
+  # Spring Boot 3.2+ Nacos config import：
+  # 没有配置 spring.config.import 时会触发 import-check，导致启动失败。
+  application:
+    name: university-career-platform
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://127.0.0.1:3306/waibao?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}
+    username: ${SPRING_DATASOURCE_USERNAME:waibao}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  redis:
+    host: ${SPRING_REDIS_HOST:127.0.0.1}
+    port: ${SPRING_REDIS_PORT:6379}
+    password: ${SPRING_REDIS_PASSWORD:}
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:127.0.0.1:9092}
+    consumer:
+      group-id: experiment-log-group
+      auto-offset-reset: latest
+      enable-auto-commit: true
+    producer:
+      acks: 1
+      retries: 3
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        enabled: false
+      config:
+        server-addr: 127.0.0.1:8848
+        enabled: false
+        import-check:
+          enabled: false
+        data-id: university-career-platform
+        file-extension: yml
+        group: DEFAULT_GROUP
+
+jwt:
+  secret: ${JWT_SECRET:dev-change-me-in-production}
+  expiration: 86400000
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport: ERROR
+    org.hibernate.dialect.Dialect: ERROR
+    org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration: ERROR
+    org.apache.kafka.clients.NetworkClient: ERROR
+
+app:
+  snowflake:
+    worker-id: 1
+    datacenter-id: 1
+  kafka:
+    experiment-log-topic: experiment-log-topic
+    experiment-log-group: experiment-log-group
+  ai-gateway:
+    base-url: ${AI_GATEWAY_BASE_URL:http://127.0.0.1:8000}
+    fallback-base-url: ${AI_GATEWAY_FALLBACK_BASE_URL:}
+    connect-timeout-ms: ${AI_GATEWAY_CONNECT_TIMEOUT_MS:5000}
+    read-timeout-ms: ${AI_GATEWAY_READ_TIMEOUT_MS:300000}
+    circuit:
+      timeout-failure-threshold: ${AI_GATEWAY_CIRCUIT_TIMEOUT_THRESHOLD:3}
+  prompt-cache:
+    ttl-seconds: 600
+  tutor:
+    hint-path: /api/ai/tutor/hint
+  ws:
+    agent-arena-path: /ws/agent-arena
+  knowledge-graph:
+    enabled: true
+    build-min-score: 0.5
+    milvus-search-top-k: 48
+    chunk-id-batch-size: 80
+    rebuild-truncate-edges: true
+
+milvus:
+  host: ${MILVUS_HOST:127.0.0.1}
+  port: ${MILVUS_PORT:19530}
+  username: ${MILVUS_USERNAME:}
+  password: ${MILVUS_PASSWORD:}
+  collection: career_knowledge_base
+  # 与 ai-gateway MilvusRagRepository 中 {MILVUS_COLLECTION}_pca3d_v2 保持一致
+  graph-collection-name: career_knowledge_base_pca3d_v2
+  secure: true
+  metric-type: COSINE
+
+ai:
+  engine:
+    active: aliyunLlmStrategy
+  aliyun:
+    api-url: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+    api-key: ${AI_ALIYUN_API_KEY:}
+  model:
+    counseling: qwen3-max
+    resume: qwen3-max
+    resume-draft: qwen3-max
+  mentor:
+    model-id: qwen3-max
+    system-prompt: 你是一位专业的大学生学业规划与职业发展导师，名为“明理”。你的任务是为学生提供学业指导、竞赛建议、心理支持和职业发展方案。请始终保持耐心、专业且富有启发性，支持 Markdown 格式回复
+  embedding:
+    baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1
+    apiKey: ${AI_EMBEDDING_API_KEY:${AI_ALIYUN_API_KEY:}}
+    model: text-embedding-v3
+    dim: 1024
+
+springdoc:
+  api-docs:
+    enabled: true
+
