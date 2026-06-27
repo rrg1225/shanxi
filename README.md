@@ -44,3 +44,7 @@ cd backend-services
 - Keep `.env` files local and use `.env.example` as the public contract.
 - Generated frontend builds, Python caches, IDE files, and Maven targets should not be committed.
 - The repository currently contains multiple services; each module should be validated before release.
+
+## Enterprise Readiness
+
+This repository now includes contribution guidelines, a security policy, operational runbook notes, PR review gates, and automated readiness checks. See [docs/ENTERPRISE_READINESS.md](docs/ENTERPRISE_READINESS.md) and [docs/OPERATIONS.md](docs/OPERATIONS.md).

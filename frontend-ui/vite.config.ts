@@ -86,5 +86,20 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    build: {
+      chunkSizeWarningLimit: 1800,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return undefined
+            if (id.includes('element-plus') || id.includes('@element-plus')) return 'vendor-element-plus'
+            if (id.includes('echarts') || id.includes('d3') || id.includes('three')) return 'vendor-visualization'
+            if (id.includes('mermaid') || id.includes('marked') || id.includes('dompurify')) return 'vendor-markdown'
+            if (id.includes('vue') || id.includes('pinia') || id.includes('vue-router')) return 'vendor-vue'
+            return 'vendor'
+          },
+        },
+      },
+    },
   }
 })

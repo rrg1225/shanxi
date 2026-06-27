@@ -1,16 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AiWorkbench from '@/views/AiWorkbench.vue'
-import WorkbenchHome from '@/views/workbench/WorkbenchHome.vue'
-import PromptWorkbench from '@/views/workbench/PromptWorkbench.vue'
-import RagBuildWorkbench from '@/views/workbench/RagBuildWorkbench.vue'
-import RagVisualWorkbench from '@/views/workbench/RagVisualWorkbench.vue'
-import AgentArenaWorkbench from '@/views/workbench/AgentArenaWorkbench.vue'
-import LearningLab from '@/views/workbench/LearningLab.vue'
-import Marketplace from '@/views/workbench/Marketplace.vue'
-import KnowledgeStarrySky from '@/views/workbench/KnowledgeStarrySky.vue'
-import KnowledgeMap from '@/views/workbench/KnowledgeMap.vue'
-import UserProfile from '@/views/workbench/UserProfile.vue'
-import AuthPortal from '@/views/AuthPortal.vue'
+
+const AiWorkbench = () => import('@/views/AiWorkbench.vue')
+const WorkbenchHome = () => import('@/views/workbench/WorkbenchHome.vue')
+const PromptWorkbench = () => import('@/views/workbench/PromptWorkbench.vue')
+const RagBuildWorkbench = () => import('@/views/workbench/RagBuildWorkbench.vue')
+const RagVisualWorkbench = () => import('@/views/workbench/RagVisualWorkbench.vue')
+const AgentArenaWorkbench = () => import('@/views/workbench/AgentArenaWorkbench.vue')
+const LearningLab = () => import('@/views/workbench/LearningLab.vue')
+const Marketplace = () => import('@/views/workbench/Marketplace.vue')
+const KnowledgeStarrySky = () => import('@/views/workbench/KnowledgeStarrySky.vue')
+const KnowledgeMap = () => import('@/views/workbench/KnowledgeMap.vue')
+const UserProfile = () => import('@/views/workbench/UserProfile.vue')
+const AuthPortal = () => import('@/views/AuthPortal.vue')
 
 declare module 'vue-router' {
   interface RouteMeta {
