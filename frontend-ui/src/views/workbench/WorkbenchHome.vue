@@ -17,6 +17,7 @@
         <p class="learning-plan__kicker">NEXT BEST STEP</p>
         <h2 class="learning-plan__title">{{ learningPlan.title }}</h2>
         <p class="learning-plan__reason">{{ learningPlan.reason }}</p>
+        <p class="learning-plan__goal">{{ learningPlan.weeklyGoal }}</p>
       </div>
       <router-link :to="learningPlan.targetPath" class="learning-plan__action">
         {{ learningPlan.nextAction }}
@@ -219,6 +220,12 @@ function formatTime(ts: number) {
   margin: 0;
   color: #475569;
   line-height: 1.55;
+}
+
+.learning-plan__goal {
+  margin: 10px 0 0;
+  color: #0f766e;
+  font-weight: 750;
 }
 
 .learning-plan__action {

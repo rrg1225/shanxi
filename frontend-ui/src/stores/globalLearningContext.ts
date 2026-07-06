@@ -84,6 +84,8 @@ export interface LearningPathRecommendation {
   reason: string
   nextAction: string
   targetPath: string
+  acceptanceCriteria: string[]
+  weeklyGoal: string
 }
 
 /** RAG 蓝图 ↔ 3D 向量空间：模拟 chunk 点（与 VectorSpace3D ChunkPoint 对齐） */
@@ -478,6 +480,14 @@ export const useGlobalLearningContextStore = defineStore('globalLearningContext'
           ? 'Complete one guided lab and record what changed in the result.'
           : 'Start with the foundation module and finish one short checkpoint.',
       targetPath: targetByFocus[focus],
+      acceptanceCriteria: [
+        'finish one module checkpoint',
+        'record one learning note',
+        'capture one artifact that can be reviewed later',
+      ],
+      weeklyGoal: level === 'portfolio'
+        ? 'Publish one polished artifact from the workbench.'
+        : 'Complete three focused workbench sessions and review the radar change.',
     }
   })
 
