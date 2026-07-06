@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export type WorkbenchUserMode = 'beginner' | 'expert'
 
@@ -75,6 +75,15 @@ export interface SkillRadarScores {
   rag: number
   agent: number
   read: number
+}
+
+export interface LearningPathRecommendation {
+  focus: keyof SkillRadarScores
+  level: 'foundation' | 'practice' | 'portfolio'
+  title: string
+  reason: string
+  nextAction: string
+  targetPath: string
 }
 
 /** RAG 蓝图 ↔ 3D 向量空间：模拟 chunk 点（与 VectorSpace3D ChunkPoint 对齐） */
@@ -440,6 +449,37 @@ export const useGlobalLearningContextStore = defineStore('globalLearningContext'
   const activeStudyStartedAt = ref<number | null>(null)
   const activeStudyPath = ref('')
   const activeStudyLabel = ref('')
+  const learningPathRecommendation = computed<LearningPathRecommendation>(() => {
+    const scores = skillRadar.value
+    const entries = Object.entries(scores) as [keyof SkillRadarScores, number][]
+    const [focus, score] = entries.slice().sort((a, b) => a[1] - b[1])[0]
+    const level = score < 35 ? 'foundation' : score < 70 ? 'practice' : 'portfolio'
+    const completedToday = todayTasks.value.filter((task) => task.done).length
+    const targetByFocus: Record<keyof SkillRadarScores, string> = {
+      prompt: '/workbench/prompt',
+      rag: '/workbench/rag-build',
+      agent: '/workbench/agent-arena',
+      read: '/workbench/knowledge-universe',
+    }
+    const titleByFocus: Record<keyof SkillRadarScores, string> = {
+      prompt: 'Prompt engineering sprint',
+      rag: 'RAG retrieval sprint',
+      agent: 'Agent orchestration sprint',
+      read: 'Knowledge map review',
+    }
+    return {
+      focus,
+      level,
+      title: titleByFocus[focus],
+      reason: `${focus} is currently the lowest radar dimension at ${score}/100; ${completedToday}/${todayTasks.value.length} daily tasks are done.`,
+      nextAction: level === 'portfolio'
+        ? 'Package one completed exercise into a portfolio note with evidence and reflection.'
+        : level === 'practice'
+          ? 'Complete one guided lab and record what changed in the result.'
+          : 'Start with the foundation module and finish one short checkpoint.',
+      targetPath: targetByFocus[focus],
+    }
+  })
 
   /** RAG 蓝图 / 3D 联动 */
   const ragPipelineParams = ref<RagPipelineParams>({
@@ -709,6 +749,7 @@ export const useGlobalLearningContextStore = defineStore('globalLearningContext'
     skillRadar,
     activityLog,
     studyRecords,
+    learningPathRecommendation,
     ragPipelineParams,
     ragSimulatedChunks,
     ragVectorSpaceRevision,

@@ -12,6 +12,17 @@
       </div>
     </section>
 
+    <section class="learning-plan" aria-label="Learning path recommendation">
+      <div>
+        <p class="learning-plan__kicker">NEXT BEST STEP</p>
+        <h2 class="learning-plan__title">{{ learningPlan.title }}</h2>
+        <p class="learning-plan__reason">{{ learningPlan.reason }}</p>
+      </div>
+      <router-link :to="learningPlan.targetPath" class="learning-plan__action">
+        {{ learningPlan.nextAction }}
+      </router-link>
+    </section>
+
     <section class="feature-deck" aria-label="核心学习入口">
       <router-link
         v-for="card in featureCards"
@@ -61,9 +72,10 @@ import { storeToRefs } from 'pinia'
 import { useGlobalLearningContextStore } from '@/stores/globalLearningContext'
 
 const learningStore = useGlobalLearningContextStore()
-const { recentActivities } = storeToRefs(learningStore)
+const { recentActivities, learningPathRecommendation } = storeToRefs(learningStore)
 
 const activities = computed(() => recentActivities.value.slice(0, 8))
+const learningPlan = computed(() => learningPathRecommendation.value)
 
 const featureCards = [
   {
@@ -175,8 +187,60 @@ function formatTime(ts: number) {
   margin-bottom: 28px;
 }
 
+.learning-plan {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 28px;
+  padding: 22px 24px;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  background: #fff;
+  box-shadow: 0 10px 32px rgba(15, 23, 42, 0.06);
+}
+
+.learning-plan__kicker {
+  margin: 0 0 8px;
+  color: #0f766e;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.learning-plan__title {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 22px;
+  font-weight: 850;
+}
+
+.learning-plan__reason {
+  margin: 0;
+  color: #475569;
+  line-height: 1.55;
+}
+
+.learning-plan__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 76px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: #0f766e;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 @media (max-width: 960px) {
   .feature-deck {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-plan {
     grid-template-columns: 1fr;
   }
 }
