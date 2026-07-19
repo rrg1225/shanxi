@@ -13,6 +13,15 @@ Shanxi Learning Platform is a multi-service education application with a Vue fro
 
 ## Quick Start
 
+From the repository root:
+
+```bash
+npm run health
+npm run ops:check
+npm run audit:mocks
+npm run ci:local
+```
+
 Frontend:
 
 ```bash
@@ -38,9 +47,23 @@ cd backend-services
 .\mvnw.cmd -DskipTests package
 ```
 
+## Practicality Audit
+
+This repository contains real service boundaries plus a frontend that still uses several deterministic mock and offline-fallback paths for lessons, RAG visualizations, and demo modals. Those paths are now tracked explicitly in [docs/MOCK_DEPENDENCY_REGISTER.md](docs/MOCK_DEPENDENCY_REGISTER.md).
+
+Use the root audit before publishing feature work:
+
+```bash
+npm run audit:mocks
+```
+
+The goal is not to remove every fallback immediately. The goal is to keep demo-only behavior visible, retire it behind real backend endpoints, and avoid mixing mock learning data with persisted learner records.
+
 ## Quality Notes
 
 - Root-level health check: `python scripts/project_health.py`.
+- Root-level CI check: `npm run ci:local`.
+- Mock/fallback dependency audit: `npm run audit:mocks`.
 - Keep `.env` files local and use `.env.example` as the public contract.
 - Generated frontend builds, Python caches, IDE files, and Maven targets should not be committed.
 - The repository currently contains multiple services; each module should be validated before release.

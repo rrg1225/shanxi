@@ -22,6 +22,7 @@ jobs:
           cache-dependency-path: frontend-ui/package-lock.json
       - run: python scripts/project_health.py
       - run: python scripts/ops_check.py
+      - run: python scripts/mock_inventory.py
       - run: npm ci
         working-directory: frontend-ui
       - run: npm run health

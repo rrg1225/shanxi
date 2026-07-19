@@ -12,8 +12,10 @@ for rel_path in (
     "SECURITY.md",
     "docs/ENTERPRISE_READINESS.md",
     "docs/OPERATIONS.md",
+    "docs/MOCK_DEPENDENCY_REGISTER.md",
     ".github/pull_request_template.md",
     ".github/workflows/ci.yml",
+    "package.json",
     "frontend-ui/package.json",
     "backend-services/pom.xml",
     "ai-gateway/requirements.txt",
@@ -24,6 +26,9 @@ for rel_path in (
 ci_file = ROOT / ".github" / "workflows" / "ci.yml"
 if ci_file.exists() and "python scripts/ops_check.py" not in ci_file.read_text(encoding="utf-8"):
     PROBLEMS.append("CI does not run python scripts/ops_check.py")
+
+if ci_file.exists() and "python scripts/mock_inventory.py" not in ci_file.read_text(encoding="utf-8"):
+    PROBLEMS.append("CI does not run python scripts/mock_inventory.py")
 
 if PROBLEMS:
     for problem in PROBLEMS:

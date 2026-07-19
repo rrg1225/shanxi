@@ -87,14 +87,18 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      chunkSizeWarningLimit: 1800,
+      // Mermaid is intentionally lazy-loaded by GlobalAiTutor; keep this below the old combined markdown bundle.
+      chunkSizeWarningLimit: 2200,
       rollupOptions: {
         output: {
           manualChunks(id) {
             if (!id.includes('node_modules')) return undefined
+            if (id.includes('mermaid')) return 'vendor-mermaid'
+            if (id.includes('marked') || id.includes('dompurify')) return 'vendor-markdown'
+            if (id.includes('echarts')) return 'vendor-echarts'
+            if (id.includes('d3')) return 'vendor-d3'
+            if (id.includes('three')) return 'vendor-three'
             if (id.includes('element-plus') || id.includes('@element-plus')) return 'vendor-element-plus'
-            if (id.includes('echarts') || id.includes('d3') || id.includes('three')) return 'vendor-visualization'
-            if (id.includes('mermaid') || id.includes('marked') || id.includes('dompurify')) return 'vendor-markdown'
             if (id.includes('vue') || id.includes('pinia') || id.includes('vue-router')) return 'vendor-vue'
             return 'vendor'
           },

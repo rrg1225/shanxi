@@ -214,7 +214,6 @@ import { storeToRefs } from 'pinia'
 import DOMPurify from 'dompurify'
 import { marked, Renderer } from 'marked'
 import type { Tokens } from 'marked'
-import mermaid from 'mermaid'
 
 /**
  * 你可替换为项目中的真实 Store。
@@ -324,11 +323,31 @@ function renderAssistantHtml(markdown: string): string {
 }
 
 let mermaidScheduled = 0
+let mermaidRuntimePromise: Promise<typeof import('mermaid')['default']> | null = null
+
+async function loadMermaidRuntime() {
+  if (!mermaidRuntimePromise) {
+    mermaidRuntimePromise = import('mermaid').then((mod) => mod.default)
+  }
+  return mermaidRuntimePromise
+}
+
+function initializeMermaidRuntime(mermaid: typeof import('mermaid')['default']) {
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: theme.value === 'dark' ? 'dark' : 'neutral',
+    securityLevel: 'loose',
+    fontFamily: 'inherit',
+  })
+}
+
 async function runMermaidDiagrams(root: HTMLElement | null) {
   const host = root ?? document.body
   const nodes = host.querySelectorAll<HTMLElement>('.tutor-mermaid-block pre.mermaid:not([data-processed])')
   if (!nodes.length) return
   try {
+    const mermaid = await loadMermaidRuntime()
+    initializeMermaidRuntime(mermaid)
     await mermaid.run({ nodes: [...nodes] })
   } catch (e) {
     console.warn('[GlobalAiTutor] mermaid run:', e)
@@ -804,22 +823,11 @@ watch(
   },
 )
 
-function applyMermaidTheme() {
-  mermaid.initialize({
-    startOnLoad: false,
-    theme: theme.value === 'dark' ? 'dark' : 'neutral',
-    securityLevel: 'loose',
-    fontFamily: 'inherit',
-  })
-}
-
 watch(theme, () => {
-  applyMermaidTheme()
   scheduleMermaid(tutorMarkdownMountEl(), 80)
 })
 
 onMounted(() => {
-  applyMermaidTheme()
   document.addEventListener('mouseup', onDocumentMouseUp)
 
   if (props.embedded) return
